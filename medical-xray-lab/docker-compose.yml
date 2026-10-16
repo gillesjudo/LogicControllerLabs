@@ -1,0 +1,61 @@
+services:
+  medical-image-server:
+    build:
+      context: ./image-server
+      dockerfile: Dockerfile
+    container_name: medical-image-server
+    ports:
+      - "8080:8080"
+    environment:
+      - XRAY_DATA_DIR=/app/data
+      - REQUIRE_PLC_TOKEN=false
+      - PLC_SHARED_TOKEN=medlab-secure-plc-token-2026
+    volumes:
+      - xray-data:/app/data
+    networks:
+      mednet:
+        ipv4_address: 172.28.0.10
+    restart: unless-stopped
+
+  xray-modbus-controller:
+    build:
+      context: ./xray-controller
+      dockerfile: Dockerfile
+    container_name: xray-modbus-controller
+    depends_on:
+      - medical-image-server
+    ports:
+      - "5020:5020"
+    environment:
+      - IMAGE_SERVER_URL=http://medical-image-server:8080
+      - MODBUS_PORT=5020
+      - PLC_READ_ONLY_LOCK=false
+      - PLC_SHARED_TOKEN=medlab-secure-plc-token-2026
+    networks:
+      mednet:
+        ipv4_address: 172.28.0.20
+    restart: unless-stopped
+
+  protocol-audit-client:
+    build:
+      context: ./audit-client
+      dockerfile: Dockerfile
+    container_name: protocol-audit-client
+    depends_on:
+      - medical-image-server
+      - xray-modbus-controller
+    networks:
+      mednet:
+        ipv4_address: 172.28.0.30
+    tty: true
+    stdin_open: true
+
+volumes:
+  xray-data:
+
+networks:
+  mednet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24

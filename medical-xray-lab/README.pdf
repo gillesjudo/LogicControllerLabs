@@ -1,0 +1,238 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R 7 0 R 9 0 R 11 0 R] /Count 4 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 4251 >>
+stream
+BT
+/F2 16 Tf 1 0 0 1 48 750 Tm (Medical X-Ray Device Emulation & Modbus/OpenPLC Protocol Auditing Lab) Tj
+/F1 10 Tf 1 0 0 1 48 728 Tm () Tj
+/F2 13 Tf 1 0 0 1 48 714 Tm (1. Overview & Lab Scope) Tj
+/F1 10 Tf 1 0 0 1 48 696 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 682 Tm (This laboratory environment emulates a networked Medical Digital Radiography \(X-Ray\)) Tj
+/F1 9.5 Tf 1 0 0 1 48 669 Tm (Subsystem controlled via Modbus TCP / OpenPLC and paired with a MedPACS X-Ray Image) Tj
+/F1 9.5 Tf 1 0 0 1 48 656 Tm (Server & Web GUI.) Tj
+/F1 10 Tf 1 0 0 1 48 643 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 629 Tm (Rather than conducting offensive exploitation or unauthorized data exfiltration,) Tj
+/F1 9.5 Tf 1 0 0 1 48 616 Tm (students use this environment to:) Tj
+/F1 9.5 Tf 1 0 0 1 48 603 Tm (1. Understand how industrial/medical controllers \(Modbus TCP / IEC 61131-3 OpenPLC) Tj
+/F1 9.5 Tf 1 0 0 1 48 590 Tm (logic\) coordinate physical acquisition parameters \(`kVp`, `mAs`, door safety) Tj
+/F1 9.5 Tf 1 0 0 1 48 577 Tm (interlocks\) with a clinical image archive.) Tj
+/F1 9.5 Tf 1 0 0 1 48 564 Tm (2. Inspect how legacy Modbus TCP registers store and transmit device telemetry and) Tj
+/F1 9.5 Tf 1 0 0 1 48 551 Tm (study references in cleartext without native protocol authentication.) Tj
+/F1 9.5 Tf 1 0 0 1 48 538 Tm (3. Audit the trust boundary between the Modbus controller and the HTTP PACS backend,) Tj
+/F1 9.5 Tf 1 0 0 1 48 525 Tm (and verify defensive remediations \(`REQUIRE_PLC_TOKEN` and `PLC_READ_ONLY_LOCK`\).) Tj
+/F1 10 Tf 1 0 0 1 48 512 Tm () Tj
+/F1 9 Tf 1 0 0 1 48 498 Tm (---------------------------------------------------------------------------) Tj
+/F1 10 Tf 1 0 0 1 48 485 Tm () Tj
+/F2 13 Tf 1 0 0 1 48 471 Tm (2. Dataset Provenance \(X-Ray Modality Filter\)) Tj
+/F1 10 Tf 1 0 0 1 48 453 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 439 Tm (The image server ingests only X-ray radiographs from the two specified Hugging Face) Tj
+/F1 9.5 Tf 1 0 0 1 48 426 Tm (datasets via [`image-server/fetch_xrays.py`]\(image-server/fetch_xrays.py\):) Tj
+/F1 10 Tf 1 0 0 1 48 413 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 399 Tm (1. [HumynLabs/medical-imaging]\(https://huggingface.co/datasets/HumynLabs/medical-) Tj
+/F1 9.5 Tf 1 0 0 1 48 386 Tm (imaging\)) Tj
+/F1 9.5 Tf 1 0 0 1 48 373 Tm (   - Curated anonymized chest/skeletal X-ray radiographs paired with radiology) Tj
+/F1 9.5 Tf 1 0 0 1 48 360 Tm (reports.) Tj
+/F1 9.5 Tf 1 0 0 1 48 347 Tm (2. [robailleo/medical-imaging-) Tj
+/F1 9.5 Tf 1 0 0 1 48 334 Tm (combined]\(https://huggingface.co/datasets/robailleo/medical-imaging-combined\)) Tj
+/F1 9.5 Tf 1 0 0 1 48 321 Tm (   - Multi-modality dataset containing X-ray, CT, MRI, and Ultrasound samples.) Tj
+/F1 9.5 Tf 1 0 0 1 48 308 Tm (   - The ingestion pipeline strictly filters records where `modality == "X-ray"`) Tj
+/F1 9.5 Tf 1 0 0 1 48 295 Tm (\(case-insensitive\) and discards all CT, MRI, Ultrasound, and Unknown rows.) Tj
+/F1 10 Tf 1 0 0 1 48 282 Tm () Tj
+/F1 9 Tf 1 0 0 1 48 268 Tm (---------------------------------------------------------------------------) Tj
+/F1 10 Tf 1 0 0 1 48 255 Tm () Tj
+/F2 13 Tf 1 0 0 1 48 241 Tm (3. Container Architecture \(`docker-compose.yml`\)) Tj
+/F1 10 Tf 1 0 0 1 48 223 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 209 Tm (The environment consists of three Docker containers connected to an isolated bridge) Tj
+/F1 9.5 Tf 1 0 0 1 48 196 Tm (network \(`mednet` ? `172.28.0.0/24`\):) Tj
+/F1 10 Tf 1 0 0 1 48 183 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 169 Tm (| Container Name | IP Address | Ports | Role |) Tj
+/F1 9.5 Tf 1 0 0 1 48 156 Tm (| :--- | :--- | :--- | :--- |) Tj
+/F1 9.5 Tf 1 0 0 1 48 143 Tm (| `medical-image-server` | `172.28.0.10` | `8080:8080` | Flask PACS Web GUI & REST API) Tj
+/F1 9.5 Tf 1 0 0 1 48 130 Tm (serving curated X-ray images and logging PLC telemetry |) Tj
+/F1 9.5 Tf 1 0 0 1 48 117 Tm (| `xray-modbus-controller` | `172.28.0.20` | `5020:5020` | Modbus TCP / OpenPLC-) Tj
+/F1 9.5 Tf 1 0 0 1 48 104 Tm (compatible X-Ray generator controller \(`pymodbus` + `xray_openplc.st`\) |) Tj
+/F1 9.5 Tf 1 0 0 1 48 91 Tm (| `protocol-audit-client` | `172.28.0.30` | Internal | Protocol diagnostics & security) Tj
+/F1 9.5 Tf 1 0 0 1 48 78 Tm (auditing workstation \(`audit_inspector.py`, `tcpdump`, `curl`\) |) Tj
+/F1 10 Tf 1 0 0 1 48 65 Tm () Tj
+ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 3820 >>
+stream
+BT
+/F1 9 Tf 1 0 0 1 48 750 Tm (---------------------------------------------------------------------------) Tj
+/F1 10 Tf 1 0 0 1 48 737 Tm () Tj
+/F2 13 Tf 1 0 0 1 48 723 Tm (4. Modbus TCP / OpenPLC Register & Coil Map) Tj
+/F1 10 Tf 1 0 0 1 48 705 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 691 Tm (The X-Ray controller \([`xray-controller/controller.py`]\(xray-controller/controller.py\)) Tj
+/F1 9.5 Tf 1 0 0 1 48 678 Tm (and OpenPLC Structured Text [`xray-controller/xray_openplc.st`]\(xray-) Tj
+/F1 9.5 Tf 1 0 0 1 48 665 Tm (controller/xray_openplc.st\)\) exposes the following registers on TCP Port 5020:) Tj
+/F1 10 Tf 1 0 0 1 48 652 Tm () Tj
+/F2 11 Tf 1 0 0 1 48 638 Tm (Coils \(Function Codes `01` Read Coils / `05` Write Single Coil\)) Tj
+/F1 9.5 Tf 1 0 0 1 48 622 Tm (| Coil Address | OpenPLC Address | Name | Description |) Tj
+/F1 9.5 Tf 1 0 0 1 48 609 Tm (| :--- | :--- | :--- | :--- |) Tj
+/F1 9.5 Tf 1 0 0 1 48 596 Tm (| `0` | `%QX0.0` | `DoorInterlock` | `1` = Radiation room door closed \(Safe\); `0` =) Tj
+/F1 9.5 Tf 1 0 0 1 48 583 Tm (Door open \(`INTERLOCK_OPEN` fault\) |) Tj
+/F1 9.5 Tf 1 0 0 1 48 570 Tm (| `1` | `%QX0.1` | `ExposureTrigger` | Momentary trigger \(`1`\) instructing the PLC to) Tj
+/F1 9.5 Tf 1 0 0 1 48 557 Tm (stage the selected study on the Image Server |) Tj
+/F1 10 Tf 1 0 0 1 48 544 Tm () Tj
+/F2 11 Tf 1 0 0 1 48 530 Tm (Holding Registers \(Function Codes `03` Read / `06` Write Single / `16` Write Multiple\)) Tj
+/F1 9.5 Tf 1 0 0 1 48 514 Tm (| Register | OpenPLC Address | Name | Default | Description |) Tj
+/F1 9.5 Tf 1 0 0 1 48 501 Tm (| :--- | :--- | :--- | :--- | :--- |) Tj
+/F1 9.5 Tf 1 0 0 1 48 488 Tm (| `HR 0` | `%QW0` | `DeviceStatus` | `1` | `0`=IDLE, `1`=READY, `2`=EXPOSING,) Tj
+/F1 9.5 Tf 1 0 0 1 48 475 Tm (`3`=TRANSFERRING, `4`=INTERLOCK_OPEN |) Tj
+/F1 9.5 Tf 1 0 0 1 48 462 Tm (| `HR 1` | `%QW1` | `TubeKvp` | `85` | X-ray tube peak kilovoltage \(`40?150 kVp`\) |) Tj
+/F1 9.5 Tf 1 0 0 1 48 449 Tm (| `HR 2` | `%QW2` | `TubeMas` | `12` | Tube current-time product \(`1?200 mAs`\) |) Tj
+/F1 9.5 Tf 1 0 0 1 48 436 Tm (| `HR 3` | `%QW3` | `SelectedStudyIdx` | `0` | Index \(`0..N-1`\) of the active X-ray) Tj
+/F1 9.5 Tf 1 0 0 1 48 423 Tm (study staged on the Image Server |) Tj
+/F1 9.5 Tf 1 0 0 1 48 410 Tm (| `HR 4` | `%QW4` | `LastSyncHttpCode` | `200` | Last HTTP status returned by `POST) Tj
+/F1 9.5 Tf 1 0 0 1 48 397 Tm (/api/plc-sync` |) Tj
+/F1 9.5 Tf 1 0 0 1 48 384 Tm (| `HR 5..20` | `%QW5..%QW20` | `ActiveImagePath` | ASCII | 16-bit ASCII-encoded URI) Tj
+/F1 9.5 Tf 1 0 0 1 48 371 Tm (path of the currently staged X-ray image \(e.g., `/images/XR-HUMYN-001.png`\) |) Tj
+/F1 10 Tf 1 0 0 1 48 358 Tm () Tj
+/F1 9 Tf 1 0 0 1 48 344 Tm (---------------------------------------------------------------------------) Tj
+/F1 10 Tf 1 0 0 1 48 331 Tm () Tj
+/F2 13 Tf 1 0 0 1 48 317 Tm (5. Standing Up the Environment) Tj
+/F1 10 Tf 1 0 0 1 48 299 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 285 Tm (From the `medical-xray-lab` directory, build and start all three containers:) Tj
+/F1 10 Tf 1 0 0 1 48 272 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 258 Tm (```bash) Tj
+/F1 9.5 Tf 1 0 0 1 48 245 Tm (docker compose up --build -d) Tj
+/F1 9.5 Tf 1 0 0 1 48 232 Tm (```) Tj
+/F1 10 Tf 1 0 0 1 48 219 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 205 Tm (Verify that all three containers are running:) Tj
+/F1 10 Tf 1 0 0 1 48 192 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 178 Tm (```bash) Tj
+/F1 9.5 Tf 1 0 0 1 48 165 Tm (docker compose ps) Tj
+/F1 9.5 Tf 1 0 0 1 48 152 Tm (```) Tj
+/F1 10 Tf 1 0 0 1 48 139 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 125 Tm (Open the MedPACS X-Ray Imaging GUI in your browser:) Tj
+/F1 9.5 Tf 1 0 0 1 48 112 Tm (- URL: `http://localhost:8080`) Tj
+/F1 10 Tf 1 0 0 1 48 99 Tm () Tj
+/F1 9 Tf 1 0 0 1 48 85 Tm (---------------------------------------------------------------------------) Tj
+/F1 10 Tf 1 0 0 1 48 72 Tm () Tj
+ET
+endstream
+endobj
+9 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 10 0 R >>
+endobj
+10 0 obj
+<< /Length 4377 >>
+stream
+BT
+/F2 13 Tf 1 0 0 1 48 750 Tm (6. Student Lab Exercises: Protocol Auditing & Security Assessment) Tj
+/F1 10 Tf 1 0 0 1 48 732 Tm () Tj
+/F2 11 Tf 1 0 0 1 48 718 Tm (Exercise 1: Inspecting Modbus TCP Telemetry & Staged Study References) Tj
+/F1 9.5 Tf 1 0 0 1 48 702 Tm (Standard Modbus TCP lacks session authentication and encryption. Any host on the same) Tj
+/F1 9.5 Tf 1 0 0 1 48 689 Tm (network segment \(`mednet`\) can query holding registers to inspect device parameters) Tj
+/F1 9.5 Tf 1 0 0 1 48 676 Tm (and read the ASCII-encoded path of the active X-ray radiograph stored in `HR 5..20`.) Tj
+/F1 10 Tf 1 0 0 1 48 663 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 649 Tm (Run the included diagnostic inspector inside the `protocol-audit-client` container:) Tj
+/F1 10 Tf 1 0 0 1 48 636 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 622 Tm (```bash) Tj
+/F1 9.5 Tf 1 0 0 1 48 609 Tm (docker exec -it protocol-audit-client python audit_inspector.py) Tj
+/F1 9.5 Tf 1 0 0 1 48 596 Tm (```) Tj
+/F1 10 Tf 1 0 0 1 48 583 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 569 Tm (What to Observe:) Tj
+/F1 9.5 Tf 1 0 0 1 48 556 Tm (- The script connects to `xray-modbus-controller:5020` using `pymodbus` Function Code) Tj
+/F1 9.5 Tf 1 0 0 1 48 543 Tm (`03` \(Read Holding Registers\) and Function Code `01` \(Read Coils\).) Tj
+/F1 9.5 Tf 1 0 0 1 48 530 Tm (- `hr_5_20_staged_image_path` reveals the exact URI path on the image server \(such as) Tj
+/F1 9.5 Tf 1 0 0 1 48 517 Tm (`/images/XR-HUMYN-001.png`\) corresponding to `hr_3_selected_study_index`.) Tj
+/F1 9.5 Tf 1 0 0 1 48 504 Tm (- Simultaneously, check the Controller & Access Audit Log table in the Web GUI) Tj
+/F1 9.5 Tf 1 0 0 1 48 491 Tm (\(`http://localhost:8080`\) to see how requests are logged.) Tj
+/F1 10 Tf 1 0 0 1 48 478 Tm () Tj
+/F2 11 Tf 1 0 0 1 48 464 Tm (Exercise 2: Analyzing Controller-to-PACS Trust Boundaries) Tj
+/F1 9.5 Tf 1 0 0 1 48 448 Tm (Review how the controller synchronizes state with the Image Server in [`xray-) Tj
+/F1 9.5 Tf 1 0 0 1 48 435 Tm (controller/controller.py`]\(xray-controller/controller.py\):) Tj
+/F1 9.5 Tf 1 0 0 1 48 422 Tm (1. Every 1.5 seconds, the controller reads `HR 1` \(`TubeKvp`\), `HR 2` \(`TubeMas`\), `HR) Tj
+/F1 9.5 Tf 1 0 0 1 48 409 Tm (3` \(`SelectedStudyIdx`\), and `Coil 1` \(`ExposureTrigger`\).) Tj
+/F1 9.5 Tf 1 0 0 1 48 396 Tm (2. It sends a JSON payload to `POST http://medical-image-server:8080/api/plc-sync`.) Tj
+/F1 9.5 Tf 1 0 0 1 48 383 Tm (3. In the default baseline configuration \(`REQUIRE_PLC_TOKEN=false` and) Tj
+/F1 9.5 Tf 1 0 0 1 48 370 Tm (`PLC_READ_ONLY_LOCK=false`\), neither the Modbus registers nor the HTTP synchronization) Tj
+/F1 9.5 Tf 1 0 0 1 48 357 Tm (endpoint enforce authentication or write protection.) Tj
+/F1 10 Tf 1 0 0 1 48 344 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 330 Tm (Discussion Questions for Students:) Tj
+/F1 9.5 Tf 1 0 0 1 48 317 Tm (- Why is placing a Modbus TCP controller on the same flat subnet as a PACS image) Tj
+/F1 9.5 Tf 1 0 0 1 48 304 Tm (archive dangerous in a hospital network?) Tj
+/F1 9.5 Tf 1 0 0 1 48 291 Tm (- If an unauthorized device modifies `HR 1` \(`TubeKvp`\), `HR 2` \(`TubeMas`\), or `Coil) Tj
+/F1 9.5 Tf 1 0 0 1 48 278 Tm (0` \(`DoorInterlock`\), what are the clinical and patient-safety implications?) Tj
+/F1 9.5 Tf 1 0 0 1 48 265 Tm (- How does encoding file paths or study identifiers inside world-readable PLC) Tj
+/F1 9.5 Tf 1 0 0 1 48 252 Tm (registers \(`HR 5..20`\) create an information disclosure risk?) Tj
+/F1 10 Tf 1 0 0 1 48 239 Tm () Tj
+/F2 11 Tf 1 0 0 1 48 225 Tm (Exercise 3: Applying & Verifying Defensive Hardening) Tj
+/F1 9.5 Tf 1 0 0 1 48 209 Tm (To remediate the identified vulnerabilities, update the environment variables in) Tj
+/F1 9.5 Tf 1 0 0 1 48 196 Tm ([`docker-compose.yml`]\(docker-compose.yml\):) Tj
+/F1 10 Tf 1 0 0 1 48 183 Tm () Tj
+/F1 9.5 Tf 1 0 0 1 48 169 Tm (1. Enable PLC-to-Server Token Authentication on `medical-image-server`:) Tj
+/F1 9.5 Tf 1 0 0 1 48 156 Tm (   ```yaml) Tj
+/F1 9.5 Tf 1 0 0 1 48 143 Tm (   environment:) Tj
+/F1 9.5 Tf 1 0 0 1 48 130 Tm (     - REQUIRE_PLC_TOKEN=true) Tj
+/F1 9.5 Tf 1 0 0 1 48 117 Tm (     - PLC_SHARED_TOKEN=medlab-secure-plc-token-2026) Tj
+/F1 9.5 Tf 1 0 0 1 48 104 Tm (   ```) Tj
+/F1 9.5 Tf 1 0 0 1 48 91 Tm (2. Enable Register Write Protection Lock on `xray-modbus-controller`:) Tj
+/F1 9.5 Tf 1 0 0 1 48 78 Tm (   ```yaml) Tj
+/F1 9.5 Tf 1 0 0 1 48 65 Tm (   environment:) Tj
+ET
+endstream
+endobj
+11 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 12 0 R >>
+endobj
+12 0 obj
+<< /Length 839 >>
+stream
+BT
+/F1 9.5 Tf 1 0 0 1 48 750 Tm (     - PLC_READ_ONLY_LOCK=true) Tj
+/F1 9.5 Tf 1 0 0 1 48 737 Tm (     - PLC_SHARED_TOKEN=medlab-secure-plc-token-2026) Tj
+/F1 9.5 Tf 1 0 0 1 48 724 Tm (   ```) Tj
+/F1 9.5 Tf 1 0 0 1 48 711 Tm (3. Recreate the containers:) Tj
+/F1 9.5 Tf 1 0 0 1 48 698 Tm (   ```bash) Tj
+/F1 9.5 Tf 1 0 0 1 48 685 Tm (   docker compose up -d) Tj
+/F1 9.5 Tf 1 0 0 1 48 672 Tm (   ```) Tj
+/F1 9.5 Tf 1 0 0 1 48 659 Tm (4. Verify in the Web GUI \(`http://localhost:8080`\) that the top-right security badge) Tj
+/F1 9.5 Tf 1 0 0 1 48 646 Tm (now displays `AUTHENTICATED \(HARDENED\)`, and confirm via `audit_inspector.py` that) Tj
+/F1 9.5 Tf 1 0 0 1 48 633 Tm (unauthenticated `/api/plc-sync` requests without `X-PLC-Token` are rejected with `HTTP) Tj
+/F1 9.5 Tf 1 0 0 1 48 620 Tm (401` and logged as `PLC_AUTH_REJECTED`.) Tj
+ET
+endstream
+endobj
+xref
+0 13
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000134 00000 n 
+0000000204 00000 n 
+0000000279 00000 n 
+0000000415 00000 n 
+0000004718 00000 n 
+0000004854 00000 n 
+0000008726 00000 n 
+0000008863 00000 n 
+0000013293 00000 n 
+0000013431 00000 n 
+trailer
+<< /Size 13 /Root 1 0 R >>
+startxref
+14322
+%%EOF
